@@ -28,8 +28,8 @@ class AskStackResultView extends ScrollView
   getIconName: ->
     'three-bars'
 
-  onDidChangeTitle: -> 
-  onDidChangeModified: -> 
+  onDidChangeTitle: ->
+  onDidChangeModified: ->
 
   handleEvents: ->
     @subscribe this, 'core:move-up', => @scrollUp()
@@ -62,14 +62,16 @@ class AskStackResultView extends ScrollView
         @h2 class: 'title', =>
           @a href: question['link'], class: 'underline title-string', title
           # Added tooltip to explain that the value is the number of votes
-          @div class: 'score', title: question['score'] + ' Votes', =>
+          @div class: 'score', 'data-tooltip': question['score'] + ' Votes', =>
             @p question['score']
           # Added a new badge for showing the total number of answers, and a tooltip to explain that the value is the number of answers
-          @div class: 'answers', title: question['answer_count'] + ' Answers', =>
+          @div class: 'answers', 'data-tooltip': question['answer_count'] + ' Answers', =>
             @p question['answer_count']
-          # Added a check mark to show that the question has an accepted answer
-          @div class: 'is-accepted', =>
-            @p class: 'icon icon-check', title: 'This question has an accepted answer' if question['accepted_answer_id']
+          # Check to see if accepted_answer_id exists (only appears if a question has an accepted answer)
+          if question['accepted_answer_id']
+            # Added a check mark to show that the question has an accepted answer
+            @div class: 'is-accepted', 'data-tooltip': 'This question has an accepted answer', =>
+              @p class: 'icon icon-check'
         @div class: 'created', =>
           @text new Date(question['creation_date'] * 1000).toLocaleString()
           # Added credits of who asked the question, with a link back to their profile
@@ -155,11 +157,13 @@ class AskStackResultView extends ScrollView
           @span class: 'answer-link', '➚'
         @span class: 'label label-success', 'Accepted' if answer['is_accepted']
         # Added tooltip to explain that the value is the number of votes
-        @div class: 'score answer', title: answer['score'] + ' Votes', =>
+        @div class: 'score answer', 'data-tooltip': answer['score'] + ' Votes', =>
           @p answer['score']
-        # Added a check mark to show that this is the accepted answer
-        @div class: 'score is-accepted', =>
-          @p class: 'icon icon-check', title: 'Accepted answer' if answer['is_accepted']
+        # Check to see if is_accepted exists (only appears if an answer has been accepted)
+        if answer['is_accepted']
+          # Added a check mark to show that this is the accepted answer
+          @div class: 'score is-accepted', 'data-tooltip': 'Accepted answer', =>
+            @p class: 'icon icon-check'
         # Added credits of who answered the question, with a link back to their profile, and also when it was answered
         @div class: 'created', =>
           @text new Date(answer['creation_date'] * 1000).toLocaleString()
